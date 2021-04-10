@@ -97,29 +97,29 @@ returnMovesValid(C,Board,X,Y,(X1,Y1),InList,InList) :-                          
     
 
 %Pawns
-pawn_helper(w, Board, X, Y, X, Y1) :-
+pawn_helper(w, Board, X, Y, X1, Y1) :-
     Y1 is Y+1,
-    withinBounds(X,Y1),
+    withinBounds(X1,Y1),
     Z is X-1+8*(Y1-1),
     nth0(Z,Board,piece("-","-",_,_)). 
     
-pawn_helper(b, Board, X, Y, X, Y1) :-
+pawn_helper(b, Board, X, Y, X1, Y1) :-
     Y1 is Y-1,
     withinBounds(1,Y1),
-    Z is X-1+8*(Y1-1),
+    Z is X1-1+8*(Y1-1),
     nth0(Z,Board,piece("-","-",_,_)).
     
-pawn_helper(w, Board, X,2,X, 4) :-
+pawn_helper(w, Board, X,2,X1, 4) :-
     withinBounds(X,4),
-    Z is (X-1)+8*(3),
-    Z1 is X-1+8*(2),
+    Z is (X1-1)+8*(3),
+    Z1 is X1-1+8*(2),
     nth0(Z,Board,piece("-","-",_,_)),
     nth0(Z1,Board,piece("-","-",_,_)).
     
-pawn_helper(b, Board, X,7,X, 5) :-
-    withinBounds(X,7),
-    Z is (X-1)+8*(5),
-    Z1 is X-1+8*(6),
+pawn_helper(b, Board, X,7,X1, 5) :-
+    withinBounds(X1,7),
+    Z is (X1-1)+8*(4),
+    Z1 is X1-1+8*(5),
     nth0(Z,Board,piece("-","-",_,_)),
     nth0(Z1,Board,piece("-","-",_,_)).
 
@@ -139,13 +139,11 @@ pawn_helper(w,Board,X,Y,X2,Y2):-
      member(piece(b,_,X2,Y2),Board).
      
 pawn_helper(b,Board,X,Y,X2,Y2):-
-    Y>8,
     X2 is X+1,
     Y2 is Y-1,
     withinBounds(X,Y),
     withinBounds(X2,Y2),
     member(piece(w,_,X2,Y2),Board);
-    Y>8,
     X2 is X-1,
     Y2 is Y-1,
     withinBounds(X,Y),

@@ -73,3 +73,6 @@ test_diagonal_startL:-
              initiate2(B),pawn_helper(w,B,6,2,5,3),
              initiate2(B),pawn_helper(w,B,7,2,6,3),
              initiate2(B),pawn_helper(w,B,7,2,6,3).
+             
+test(Z):-fixInput(X,Y,X1,Y1),
+    Z is (X-1)+8*(Y-1).

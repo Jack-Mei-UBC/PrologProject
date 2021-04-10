@@ -1,11 +1,5 @@
-%intiate(Board) - intializes the first state of the board
-%
-w.
-b.
-
-% initiate2(B) with pieces inside
-
-
+:- [moves].
+:- [tests].
 initiate2(B) :- B = [piece(w,rook,1,1),piece(w,knight,2,1),piece(w,bishop,3,1),piece(w,queen,4,1),piece(w,king,5,1),piece(w,bishop,6,1),piece(w,knight,7,1),piece(w,rook,8,1),
 piece(w, pawn,1, 2),piece(w, pawn,2, 2),piece(w, pawn, 3, 2),piece(w, pawn, 4, 2),piece(w, pawn, 5, 2),piece(w, pawn, 6, 2),piece(w, pawn, 7,2),piece(w, pawn, 8, 2),
 piece("-","-",1,3),piece("-","-",2,3),piece("-","-",3,3),piece("-","-",4,3),piece("-","-",5,3),piece("-","-",6,3),piece("-","-",7,3),piece("-","-",8,3),
@@ -60,10 +54,17 @@ letter(pawn,   'p').
 letter(queen,  'q').
 letter(rook,   'r').
 letter("-", "_"). 
-
+fixInput(CurrX,CurrY,NextX,NextY):-
+    enterMove(CX,CY,NX,NY),
+    char_code(CX,CX1),
+    char_code(NX,NX1),
+    CurrX is CX1-96,
+    NextX is NX1-96,
+    atom_number(CY,CurrY),
+    atom_number(NY,NextY).
 enterMove(CurrX,CurrY,NextX,NextY):-
     repeat,
-    write("Enter Player 1 Location and move in form 'a1h8.'\n"),   % will make prolog try till the answer is in the right form
+    write("\nEnter Player Location and move in form 'a1h8.'\n"),   % will make prolog try till the answer is in the right form
     read(Input),
     string_lower(Input,Processed),
     write(Processed),
@@ -91,3 +92,51 @@ withinBounds(CurrX,CurrY,NextX,NextY):-
     CurrY > -1,
     NextY < 9,
     NextY > -1.
+
+playGame(w,Board):-
+    \+member(piece(w,king,_,_),Board),
+    write("\nBlACK WINS!").
+playGame(b,Board):-
+    \+member(piece(b,king,_,_),Board),
+    write("\nWHITE WINS!").
+playGame(w,Board):-
+    writeboard(Board),
+    write("\nIT IS WHITE'S TURN"),
+    repeat,
+    fixInput(X,Y,X1,Y1),
+    Z is (X-1)+8*(Y-1),
+    nth0(Z,Board,piece(C,Piece,X,Y)),
+    piece_helper(piece(C,Piece,X,Y),X1,Y1,Board),
+    movePiece(Board,piece(C,Piece,X,Y),X1,Y1,Result),
+    playGame(b,Result).
+playGame(b,Board):-
+    writeboard(Board),
+    write("\nIT IS BLACK'S TURN"),
+    repeat,
+    fixInput(X,Y,X1,Y1),
+    Z is (X-1)+8*(Y-1),
+    nth0(Z,Board,piece(C,Piece,X,Y)),
+    piece_helper(piece(C,Piece,X,Y),X1,Y1,Board),
+    movePiece(Board,piece(C,Piece,X,Y),X1,Y1,Result),
+    playGame(w,Result). 
+    
+start:-initiate2(Board),playGame(w,Board).
+movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
+    Z is (X-1)+8*(Y-1),
+    replace(Z,piece("-","-",X,Y),Board,Middle),
+    Z2 is (X1-1)+8*(Y1-1),
+    replace(Z2,piece(C,Piece,X1,Y1),Middle,Result).
+    
+    
+replace(_, _, [], []).
+replace(0,R,[H|T],[R|T]).
+replace(Index,R,[H1|T1],[H1|T2]) :-
+    NextIndex is Index-1,
+    replace(NextIndex,R,T1,T2).
+    
+    
+    
+    
+    
+    
+    
