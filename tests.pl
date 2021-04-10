@@ -73,6 +73,10 @@ test_diagonal_startL:-
              initiate2(B),pawn_helper(w,B,6,2,5,3),
              initiate2(B),pawn_helper(w,B,7,2,6,3),
              initiate2(B),pawn_helper(w,B,7,2,6,3).
+% test out of Bounds
+outOfBounds:- initiate2(B),pawn_helper(w,B,-1,-1,9,1).
+outOfBounds2:-initate2(B),pawn_helper(b,B,-1,0,8,9).
+              
              
 test(Z):-fixInput(X,Y,X1,Y1),
     Z is (X-1)+8*(Y-1).
