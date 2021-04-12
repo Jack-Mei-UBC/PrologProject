@@ -1,6 +1,7 @@
 % import moves and test
 :- [moves].
 :- [test].
+:- [instructions].
 
 % initates the board piece placements initate2(Board)
 initiate2(B) :- B = [piece(w,rook,1,1),piece(w,knight,2,1),piece(w,bishop,3,1),piece(w,queen,4,1),piece(w,king,5,1),piece(w,bishop,6,1),piece(w,knight,7,1),piece(w,rook,8,1),
@@ -153,7 +154,8 @@ playGame(b,Board):-
     playGame(w,Result).
      
 % Starts the Chess Game uses prediacte intiate2(Board) and playGame(w,Board), starts with white 
-start:-initiate2(Board),playGame(w,Board).
+start:- instructions(Game), begin.
+begin:-initiate2(Board),playGame(w,Board).
 
 % movePiece(Board,piece(X,Piece,X,Y),X1,Y1,Result) return true if we are able to move the piece to correct location on the Board based on X1 Y1 coord 
 movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
