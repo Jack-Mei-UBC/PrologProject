@@ -95,10 +95,12 @@ withinBounds(CurrX,CurrY,NextX,NextY):-
 
 playGame(w,Board):-
     \+member(piece(w,king,_,_),Board),
-    write("\nBlACK WINS!").
+    write("\nBlACK WINS!"),
+    write("\n o{^.^}o").
 playGame(b,Board):-
     \+member(piece(b,king,_,_),Board),
-    write("\nWHITE WINS!").
+    write("\nWHITE WINS!"),
+    write("\n o{^.^}o").
 playGame(w,Board):-
     writeboard(Board),
     write("\nIT IS WHITE'S TURN"),
