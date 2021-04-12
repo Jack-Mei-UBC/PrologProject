@@ -1,5 +1,5 @@
 :- [moves].
-:- [tests].
+:- [test].
 initiate2(B) :- B = [piece(w,rook,1,1),piece(w,knight,2,1),piece(w,bishop,3,1),piece(w,queen,4,1),piece(w,king,5,1),piece(w,bishop,6,1),piece(w,knight,7,1),piece(w,rook,8,1),
 piece(w, pawn,1, 2),piece(w, pawn,2, 2),piece(w, pawn, 3, 2),piece(w, pawn, 4, 2),piece(w, pawn, 5, 2),piece(w, pawn, 6, 2),piece(w, pawn, 7,2),piece(w, pawn, 8, 2),
 piece("-","-",1,3),piece("-","-",2,3),piece("-","-",3,3),piece("-","-",4,3),piece("-","-",5,3),piece("-","-",6,3),piece("-","-",7,3),piece("-","-",8,3),
@@ -33,6 +33,9 @@ writeboard([piece(C,Type,1,Y)|T]) :-
 writeboard([X|T]) :-
     pprint(X),
     writeboard(T).
+    
+    
+% writeBoard([piece(C,T,X,Y)])
 writeboard([piece(C,T,X,Y)]):-
     write("\n   a   b   c   d   e   f   g   h").
 test:- initiate2(B),writeboard(B).
@@ -54,6 +57,7 @@ letter(pawn,   'p').
 letter(queen,  'q').
 letter(rook,   'r').
 letter("-", "_"). 
+
 fixInput(CurrX,CurrY,NextX,NextY):-
     enterMove(CX,CY,NX,NY),
     char_code(CX,CX1),
@@ -62,9 +66,11 @@ fixInput(CurrX,CurrY,NextX,NextY):-
     NextX is NX1-96,
     atom_number(CY,CurrY),
     atom_number(NY,NextY).
+    
+   
 enterMove(CurrX,CurrY,NextX,NextY):-
     repeat,
-    write("\nEnter Player Location and move in form 'a1h8.'\n"),   % will make prolog try till the answer is in the right form
+    write("\nEnter Player Location and move in form 'a1h8.' or enter 'quit.' to end the game \n"),   % will make prolog try till the answer is in the right form
     read(Input),
     string_lower(Input,Processed),
     write(Processed),
@@ -72,6 +78,11 @@ enterMove(CurrX,CurrY,NextX,NextY):-
     sub_string(Processed,1,1,2,CurrYUnprocessed),
     sub_string(Processed,2,1,1,NextXUnprocessed),
     sub_string(Processed,3,1,0,NextYUnprocessed),
+    p_input(CurrXUnprocessed,CurrYUnprocessed,NextXUnprocessed,NextYUnprocessed,CurrX,CurrY,NextX,NextY).
+
+    
+% parsing input p_input (X,Y,X1,Y1,CX,CY,NX,NY) returns true if either quit or correct format is enterted    
+p_input(CurrXUnprocessed,CurrYUnprocessed,NextXUnprocessed,NextYUnprocessed,CurrX,CurrY,NextX,NextY):-
     string_chars(CurrXUnprocessed,[CurrX]),
     string_chars(CurrYUnprocessed,[CurrY]),
     string_chars(NextXUnprocessed,[NextX]),
@@ -79,6 +90,19 @@ enterMove(CurrX,CurrY,NextX,NextY):-
     atom_number(CurrY,Y1),
     atom_number(NextY,Y2),
     withinBounds(CurrX,Y1,NextX,Y2).
+
+p_input(CurrXUnprocessed,CurrYUnprocessed,NextXUnprocessed,NextYUnprocessed,CurrX,CurrY,NextX,NextY):-
+    string_chars(CurrXUnprocessed,[CurrX]),
+    string_chars(CurrYUnprocessed,[CurrY]),
+    string_chars(NextXUnprocessed,[NextX]),
+    string_chars(NextYUnprocessed,[NextY]),
+    CurrX = q,
+    CurrY = u,
+    NextX = i,
+    NextY = t,
+    write("\n"),
+    write("\n You have quit the game, let's play again next time (^.^)o[~] \n"), halt. 
+    
 withinBounds(CurrX,CurrY,NextX,NextY):-
     char_code(CurrX,VcurrX),
     char_code(NextX,VnextX),
@@ -107,9 +131,9 @@ playGame(w,Board):-
     repeat,
     fixInput(X,Y,X1,Y1),
     Z is (X-1)+8*(Y-1),
-    nth0(Z,Board,piece(C,Piece,X,Y)),
-    piece_helper(piece(C,Piece,X,Y),X1,Y1,Board),
-    movePiece(Board,piece(C,Piece,X,Y),X1,Y1,Result),
+    nth0(Z,Board,piece(w,Piece,X,Y)),
+    piece_helper(piece(w,Piece,X,Y),X1,Y1,Board),
+    movePiece(Board,piece(w,Piece,X,Y),X1,Y1,Result),
     playGame(b,Result).
 playGame(b,Board):-
     writeboard(Board),
@@ -117,10 +141,11 @@ playGame(b,Board):-
     repeat,
     fixInput(X,Y,X1,Y1),
     Z is (X-1)+8*(Y-1),
-    nth0(Z,Board,piece(C,Piece,X,Y)),
-    piece_helper(piece(C,Piece,X,Y),X1,Y1,Board),
-    movePiece(Board,piece(C,Piece,X,Y),X1,Y1,Result),
-    playGame(w,Result). 
+    nth0(Z,Board,piece(b,Piece,X,Y)),
+    piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
+    movePiece(Board,piece(b,Piece,X,Y),X1,Y1,Result),
+    playGame(w,Result).
+     
     
 start:-initiate2(Board),playGame(w,Board).
 movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
